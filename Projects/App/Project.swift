@@ -2,7 +2,7 @@
 import ProjectDescriptionHelpers
 
 let project = Project.makeModule(
-    name: "CheongForDo",
+    name: "CFD",
     platform: .iOS,
     product: .app,
     dependencies: [

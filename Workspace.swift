@@ -1,7 +1,7 @@
 @preconcurrency import ProjectDescription
 
 let workspace = Workspace(
-    name: "CheongForDo",
+    name: "CFD",
     projects: [
         "Projects/App"
     ]
