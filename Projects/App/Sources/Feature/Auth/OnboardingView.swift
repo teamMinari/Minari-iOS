@@ -23,6 +23,8 @@ struct OnboardingView: View {
             
             VStack {
                 CFDBottomButton {
+                    
+                } text: {
                     Text("로그인")
                         .font(.pretendard(size: 15, weight: .bold))
                         .foregroundColor(Color.white)
