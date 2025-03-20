@@ -27,6 +27,8 @@ struct SelectTopicView: View {
                     .foregroundColor(.white)
             }
             
+            Spacer()
+                .frame(maxHeight: 100)
         }
         .padding(.horizontal, 28)
     }
