@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "compression-type" : "gpu-optimized-best",
       "filename" : "Logo.svg",
       "idiom" : "universal"
     }
@@ -10,6 +11,7 @@
     "version" : 1
   },
   "properties" : {
-    "compression-type" : "automatic"
+    "compression-type" : "automatic",
+    "template-rendering-intent" : "template"
   }
 }

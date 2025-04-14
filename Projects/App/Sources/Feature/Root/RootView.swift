@@ -2,12 +2,13 @@ import SwiftUI
 
 struct RootView: View {
     
-    @StateObject var rootVM = RootViewModel.shared
+    @EnvironmentObject var _rootVM: RootViewModel
     
     var body: some View {
-        NavigationStack {
-            CFDTabView(selection: $rootVM.tabSelection) {
-                switch rootVM.tabSelection {
+        
+        CFDTabView(selection: $_rootVM.tabSelection) {
+            Group {
+                switch _rootVM.tabSelection {
                 case .tutorial:
                     TutorialView()
                 case .news:
@@ -20,8 +21,10 @@ struct RootView: View {
                     ProfileView()
                 }
             }
-            .hideBar(false)
+            .environmentObject(_rootVM)
         }
+        .hideBar(false)
+        
     }
 }
 

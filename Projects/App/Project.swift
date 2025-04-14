@@ -7,7 +7,7 @@ let project = Project.makeModule(
     product: .app,
     dependencies: [
         .SPM.Moya,
-        .SPM.Alamofire,
+        .SPM.Alamofire
     ],
     resources: ["Resources/**"],
     infoPlist: .file(path: "Support/Info.plist")

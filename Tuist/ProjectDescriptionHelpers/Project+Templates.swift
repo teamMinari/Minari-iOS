@@ -5,7 +5,7 @@ public extension Project {
         name: String,
         platform: Platform = .iOS,
         product: Product,
-        organizationName: String = "com.sinminho",
+        organizationName: String = "net.sinminho",
         packages: [Package] = [],
         deploymentTarget: DeploymentTarget? = .iOS(targetVersion: "16.0", devices: [.iphone]),
         dependencies: [TargetDependency] = [],
@@ -14,7 +14,7 @@ public extension Project {
         infoPlist: InfoPlist = .default
     ) -> Project {
         let settings: Settings = .settings(
-            base: [:],
+            base: ["DEVELOPMENT_TEAM": "C22QH9P7HR"],
             configurations: [
                 .debug(name: .debug),
                 .release(name: .release)

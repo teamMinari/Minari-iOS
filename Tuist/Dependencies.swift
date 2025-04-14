@@ -9,7 +9,7 @@ let dependencies = Dependencies(
             requirement: .upToNextMajor(from: "15.0.0")),
         .remote(
             url: "https://github.com/Alamofire/Alamofire",
-            requirement: .upToNextMinor(from: "5.0.0")),
+            requirement: .upToNextMinor(from: "5.0.0"))
     ],
     platforms: [.iOS]
 )

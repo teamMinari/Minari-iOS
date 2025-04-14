@@ -21,18 +21,18 @@ struct CFDTabView<Content: View>: View {
     
     
     var body: some View {
-        
-        ZStack {
-            content
+        GeometryReader { reader in
             
-            
-            GeometryReader { reader in
+            ZStack {
+                content
+                
+                
                 VStack(spacing: 0) {
                     Spacer()
                     
                     Rectangle()
                         .fill(Color.white)
-                        .frame(height: 50)
+                        .frame(height: 72)
                         .overlay {
                             HStack {
                                 Spacer()
@@ -41,43 +41,52 @@ struct CFDTabView<Content: View>: View {
                                     Button {
                                         selection = item
                                     } label: {
-                                        item.icon
-                                            .foregroundStyle(
-                                                item == selection
-                                                ? CFDAsset.Primary.tabAccent.swiftUIColor
-                                                : CFDAsset.Gray.tabgray.swiftUIColor
-                                            )
+                                        VStack(spacing: 6) {
+                                            Group {
+                                                if item == selection {
+                                                    item.iconFill
+                                                } else {
+                                                    item.icon
+                                                }
+                                                
+                                            }
                                             .aspectRatio(contentMode: .fit)
-                                            .frame(width: 26, height: 26)
+                                            .frame(width: 24, height: 24)
                                             
+                                            Text(item.name)
+                                                .font(.pretendard(size: 12))
+                                            
+                                        }
+                                        .foregroundStyle(
+                                            item == selection
+                                            ? CFDAsset.Primary.p500.swiftUIColor
+                                            : CFDAsset.Gray.g300.swiftUIColor
+                                        )
+                                        
+                                        
                                     }
                                     .disabled(item == selection)
                                     
                                     Spacer()
                                 }
                             }
-                            .padding(.horizontal, 36)
+                            .padding(.horizontal, reader.size.width / 12)
                         }
                     
                     Rectangle()
                         .fill(Color.white)
                         .frame(height: reader.safeAreaInsets.bottom)
-
+                    
+                    
                 }
                 .ignoresSafeArea()
-               
+                .opacity(barOpacity)
+
+                
             }
-            .opacity(barOpacity)
         }
         
         
         
-    }
-}
-
-
-#Preview {
-    CFDTabView(selection: .constant(.home)) {
-        HomeView()
     }
 }

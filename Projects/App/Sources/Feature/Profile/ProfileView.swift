@@ -1,8 +1,19 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @EnvironmentObject var _rootVM: RootViewModel
+
+    
     var body: some View {
-        Text("프로필")
+        VStack {
+            Text("프로필")
+            
+            Button {
+                _rootVM.isDebug = false
+            } label: {
+                Text("로그아웃")
+            }
+        }
     }
 }
 

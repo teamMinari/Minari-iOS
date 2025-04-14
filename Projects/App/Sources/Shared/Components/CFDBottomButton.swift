@@ -1,20 +1,20 @@
 import SwiftUI
 
-struct CFDBottomButton: View {
+struct CFDBottomButton<Content: View>: View {
     let action: (() -> ())?
-    let text: Text
+    let content: Content
     let background: Color
     let stroke: StrokeStyle?
     let strokeColor: Color?
     
     init(
         action: (() -> ())? = nil,
-        text: () -> Text,
-        background: Color = CFDAsset.Primary.blue.swiftUIColor,
+        content: () -> Content,
+        background: Color = CFDAsset.Primary.p500.swiftUIColor,
         strokeStyle: StrokeStyle? = nil,
         strokeColor: Color? = nil
     ) {
-        self.text = text()
+        self.content = content()
         self.background = background
         self.action = action
         self.stroke = strokeStyle
@@ -27,26 +27,26 @@ struct CFDBottomButton: View {
                 action()
             }
         } label: {
-            Group {
-                if let stroke = stroke,
-                   let strokeColor = strokeColor {
-                    RoundedRectangle(cornerRadius: 30)
-                        .strokeBorder(strokeColor, style: stroke)
-                        .background(RoundedRectangle(cornerRadius: 30).fill(background))
-                } else {
-                    RoundedRectangle(cornerRadius: 30)
-                        .foregroundStyle(background)
-                }
-            }
-            .frame(height: 45)
-            .overlay {
-                text
-            }
             
+            RoundedRectangle(cornerRadius: 12)
+                .foregroundStyle(background)
+                .overlay {
+                    if let stroke = stroke,
+                       let strokeColor = strokeColor {
+                        RoundedRectangle(cornerRadius: 12)
+                            .strokeBorder(strokeColor, style: stroke)
+                    }
+                }
+        }
+        .frame(height: 44)
+        .overlay {
+            content
         }
         
     }
+    
 }
+
 
 #Preview {
     CFDBottomButton{
