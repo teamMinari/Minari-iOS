@@ -13,8 +13,10 @@ struct CFDSearchBar: View {
             }
             .overlay {
                 HStack {
-                    TextField(text: .constant("Search")) {
+                    TextField(text: .constant("")) {
                         Text("검색")
+                            .font(.pretendard(size: 16, weight: .semibold))
+                            .foregroundStyle(CFDAsset.Gray.g300.swiftUIColor)
                     }
                     .focused($isFocused)
                     
@@ -22,6 +24,7 @@ struct CFDSearchBar: View {
                         
                     } label: {
                         CFDAsset.Icon.search.swiftUIImage
+                            .tint(CFDAsset.Gray.g500.swiftUIColor)
                     }
                     
                 }

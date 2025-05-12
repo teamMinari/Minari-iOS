@@ -7,7 +7,7 @@ public extension TargetDependency {
 public extension TargetDependency.SPM {
     static let Moya = TargetDependency.external(name: "Moya")
     static let Alamofire = TargetDependency.external(name: "Alamofire")
-    
+    static let Kingfisher = TargetDependency.external(name: "Kingfisher")
 }
 
 public extension Package {}

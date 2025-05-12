@@ -15,13 +15,13 @@ struct SigninView: View {
             Spacer()
                 .frame(maxHeight: 72)
             
-            CFDTextField(prompt: "아이디 입력")
+            CFDTextField(prompt: "아이디 입력", text: $_authVM.signinRequest.id)
                
             
             Spacer()
                 .frame(maxHeight: 12)
             
-            CFDTextField(prompt: "비밀번호 입력")
+            CFDTextField(prompt: "비밀번호 입력", text: $_authVM.signinRequest.password)
                 
             
             Spacer()
@@ -55,12 +55,16 @@ struct SigninView: View {
             
             
             CFDBottomButton {
-                _rootVM.popToRoot()
-                _rootVM.isDebug = true
+                _authVM.signin {
+                    _rootVM.popToRoot()
+                } onError: {
+                    
+                }
+                
             } content: {
                 
                 Text("로그인")
-                    .font(.pretendard(size: 16, weight: .semiBold))
+                    .font(.pretendard(size: 16, weight: .semibold))
                     .foregroundStyle(Color.white)
                 
             }
@@ -71,14 +75,14 @@ struct SigninView: View {
             
             CFDBottomButton(
                 action: {
-                    
+                    _authVM.googleLoginAlert = true
                 },
                 content: {
                     HStack {
                         CFDAsset.Icon.google.swiftUIImage
                         
                         Text("구글로 계속하기")
-                            .font(.pretendard(size: 16, weight: .semiBold))
+                            .font(.pretendard(size: 16, weight: .semibold))
                             .foregroundStyle(CFDAsset.Gray.g500.swiftUIColor)
                     }
                     
@@ -92,6 +96,8 @@ struct SigninView: View {
                 .frame(maxHeight: 20)
             
             Button {
+                _rootVM.popToRoot()
+                _rootVM.paths.append(CFDAuthViews.signupId)
                 
             } label: {
                 HStack(spacing: 4) {
@@ -125,6 +131,14 @@ struct SigninView: View {
             }
             
         }
+        .alert(isPresented: $_authVM.googleLoginAlert) {
+            Alert(title: Text("알림"), message: Text("개발 중인 기능입니다."),
+                             dismissButton: .default(Text("확인")))
+        }
+        .onAppear {
+            _authVM.signinRequest = .init(id: "", password: "")
+        }
+        
         
         
     }

@@ -16,14 +16,14 @@ struct TagSearchButton: View {
                             .strokeBorder(CFDAsset.Gray.g100.swiftUIColor, lineWidth: 1)
                     }
                     .overlay {
-                        TagSearchButtonImages.get(category: category)
+                        category.image
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 24, height: 24)
                     }
                 
                 Text(category.name)
-                    .font(.pretendard(size: 12, weight: .semiBold))
+                    .font(.pretendard(size: 12, weight: .semibold))
                     .foregroundStyle(CFDAsset.Gray.g700.swiftUIColor)
             }
         }

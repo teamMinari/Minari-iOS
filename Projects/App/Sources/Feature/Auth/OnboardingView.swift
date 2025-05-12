@@ -139,6 +139,9 @@ struct OnboardingView: View {
             .environmentObject(_rootVM)
             
         }
+        .onAppear {
+            _authVM.signupRequest = .init()
+        }
         
         
     }

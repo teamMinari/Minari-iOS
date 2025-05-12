@@ -11,7 +11,8 @@ public extension Project {
         dependencies: [TargetDependency] = [],
         sources: SourceFilesList = ["Sources/**"],
         resources: ResourceFileElements? = nil,
-        infoPlist: InfoPlist = .default
+        infoPlist: InfoPlist = .default,
+        additionalFiles: [FileElement] = []
     ) -> Project {
         let settings: Settings = .settings(
             base: ["DEVELOPMENT_TEAM": "C22QH9P7HR"],
@@ -29,7 +30,8 @@ public extension Project {
             infoPlist: infoPlist,
             sources: sources,
             resources: resources,
-            dependencies: dependencies
+            dependencies: dependencies,
+            additionalFiles: additionalFiles
         )
 
         let schemes: [Scheme] = [.makeScheme(target: .debug, name: name)]

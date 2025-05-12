@@ -6,10 +6,12 @@ class RootViewModel: ObservableObject {
     @Published var tabSelection: CFDTabItem = .home
     @Published var paths: NavigationPath = .init()
     
-    @Published var isDebug: Bool = false
+    @Published var isTabBarHidden: Bool = false
+    
+    @Published var isDebug: Bool = true
     
     var isSigned: Bool {
-        return isDebug
+        return KeyChain.read() != nil
     }
     
     func popToRoot() {

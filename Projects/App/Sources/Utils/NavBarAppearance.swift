@@ -4,7 +4,7 @@ struct NavBarApperance {
     static func initBackground() {
         let navBarAppear = UINavigationBarAppearance()
         navBarAppear.configureWithTransparentBackground()
-        navBarAppear.backgroundColor = .white
+        navBarAppear.backgroundColor = .clear
         
         UINavigationBar.appearance().standardAppearance = navBarAppear
         UINavigationBar.appearance().compactAppearance = navBarAppear

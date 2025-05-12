@@ -18,7 +18,6 @@ struct CFDApp: App {
                 Group {
                     if _rootVM.isSigned {
                         RootView()
-                            
                     } else {
                         OnboardingView()
                     }
@@ -27,7 +26,6 @@ struct CFDApp: App {
                 .transaction {
                     $0.animation = .none
                 }
-                
                 
             }
          

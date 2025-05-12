@@ -7,7 +7,7 @@ extension Font {
         switch weight {
         case .thin:
             font = CFDFontFamily.Pretendard.thin
-        case .extraLight:
+        case .extralight:
             font = CFDFontFamily.Pretendard.extraLight
         case .light:
             font = CFDFontFamily.Pretendard.light
@@ -15,11 +15,11 @@ extension Font {
             font = CFDFontFamily.Pretendard.light
         case .medium:
             font = CFDFontFamily.Pretendard.medium
-        case .semiBold:
+        case .semibold:
             font = CFDFontFamily.Pretendard.semiBold
         case .bold:
             font = CFDFontFamily.Pretendard.bold
-        case .extraBold:
+        case .extrabold:
             font = CFDFontFamily.Pretendard.extraBold
         case .black:
             font = CFDFontFamily.Pretendard.black
