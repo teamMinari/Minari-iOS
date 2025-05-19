@@ -4,17 +4,20 @@ import SwiftUI
 struct SelectTopicButton: View {
     
     
-    let text: String
-    @Binding var isSelected: Bool
+    var text: String
+    var isSelected: Bool
     
-    init(_ text: String = "10대", isSelected: Binding<Bool>) {
-        self._isSelected = isSelected
+    let action: () -> ()
+    
+    init(_ text: String = "10대", isSelected: Bool, action: @escaping () -> ()) {
+        self.isSelected = isSelected
         self.text = text
+        self.action = action
     }
     
     var body: some View {
         Button {
-            isSelected.toggle()
+            action()
         } label: {
             Text(text)
                 .font(.pretendard(size: 12, weight: .semibold))
@@ -41,6 +44,8 @@ struct SelectTopicButton: View {
 
 #Preview {
 
-    SelectTopicButton(isSelected: .constant(true))
+    SelectTopicButton(isSelected: true) {
+        
+    }
     
 }

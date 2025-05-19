@@ -1,16 +1,16 @@
 import SwiftUI
 
-struct CFDBottomButton<Content: View>: View {
+struct CFDBottomButton<Content: View, S: ShapeStyle>: View {
     let action: (() -> ())?
     let content: Content
-    let background: Color
+    let background: S
     let stroke: StrokeStyle?
     let strokeColor: Color?
     
     init(
         action: (() -> ())? = nil,
         content: () -> Content,
-        background: Color = CFDAsset.Primary.p500.swiftUIColor,
+        background: S = CFDAsset.Primary.p500.swiftUIColor,
         strokeStyle: StrokeStyle? = nil,
         strokeColor: Color? = nil
     ) {
@@ -29,7 +29,7 @@ struct CFDBottomButton<Content: View>: View {
         } label: {
             
             RoundedRectangle(cornerRadius: 12)
-                .foregroundStyle(background)
+                .fill(background)
                 .overlay {
                     if let stroke = stroke,
                        let strokeColor = strokeColor {

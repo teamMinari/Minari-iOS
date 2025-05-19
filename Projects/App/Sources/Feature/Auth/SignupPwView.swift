@@ -25,19 +25,30 @@ struct SignupPwView: View {
                 Spacer()
                     .frame(maxHeight: 60)
                 
-                CFDTextField(prompt: "비밀번호 입력", text: $_authVM.signupRequest.password)
+                CFDTextField(prompt: "비밀번호 입력", text: $_authVM.signupRequest.password, isSecure: true)
                 
                 Spacer()
                     .frame(maxHeight: 12)
                 
-                CFDTextField(prompt: "비밀번호 확인", text: $_authVM.signupRequest.confirmPassword)
+                CFDTextField(prompt: "비밀번호 확인", text: $_authVM.signupRequest.confirmPassword, isSecure: true)
             }
             .padding(.horizontal, 30)
             
             Spacer()
             
             AuthBottomButton {
-                print(_authVM.signupRequest.params)
+                if _authVM.signupRequest.password.isEmpty {
+                    _authVM.signupAlertMessage = .pw
+                    _authVM.signupAlert = true
+                    return
+                }
+                
+                if !_authVM.signupRequest.isPasswordValid {
+                    _authVM.signupAlertMessage = .pwconfirm
+                    _authVM.signupAlert = true
+                    return
+                }
+                
                 _rootVM.paths.append(CFDAuthViews.signupTopic)
             }
         }
@@ -54,6 +65,10 @@ struct SignupPwView: View {
                 }
             }
             
+        }
+        .alert(isPresented: $_authVM.signupAlert) {
+            Alert(title: Text("알림"), message: Text(_authVM.signupAlertMessage.message),
+                             dismissButton: .default(Text("확인")))
         }
     }
 }

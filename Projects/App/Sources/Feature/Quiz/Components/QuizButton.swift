@@ -2,9 +2,11 @@ import SwiftUI
 
 struct QuizButton: View {
     let style: QuizButtonStyle
+    let action: () -> ()
     
-    init(_ style: QuizButtonStyle) {
+    init(_ style: QuizButtonStyle, action: @escaping () -> Void) {
         self.style = style
+        self.action = action
     }
     
     var body: some View {
@@ -27,7 +29,7 @@ struct QuizButton: View {
                             }
                         
                         Button {
-                            
+                            action()
                         } label: {
                             HStack(spacing: -4) {
                                 Text(getTitle())
@@ -53,6 +55,9 @@ struct QuizButton: View {
                 .padding(.leading, 24)
             }
             .clipped()
+            .onTapGesture {
+                action()
+            }
     }
         
     
@@ -127,5 +132,7 @@ enum QuizButtonStyle: Equatable {
 
 
 #Preview {
-    QuizButton(.review)
+    QuizButton(.review) {
+        
+    }
 }

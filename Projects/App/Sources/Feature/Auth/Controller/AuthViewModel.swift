@@ -1,4 +1,5 @@
 import SwiftUI
+import Alamofire
 import Moya
 
 class AuthViewModel: ObservableObject {
@@ -9,8 +10,13 @@ class AuthViewModel: ObservableObject {
     @Published var signinRequest = SigninRequest(id: "", password: "")
     
     @Published var googleLoginAlert: Bool = false
+    @Published var signupAlert: Bool = false
     
-    @Published var signupAlertMessage: String = "오류가 발생했습니다"
+    @Published var signupAlertMessage: SignupAlert = .id
+    
+    @Published var savedTopic: SavedTopic = .init(job: "직장인")
+    
+    @Published var topics: [Topic] = [.init(name: "10대"), .init(name: "20대"), .init(name: "30대"), .init(name: "40대")]
     
     let provider = MoyaProvider<AuthService>()
     
@@ -47,6 +53,37 @@ class AuthViewModel: ObservableObject {
             
             
         }
+        
+        
+        
+    }
+    
+    func signup( onCompleted: @escaping () -> Void, onError: @escaping () -> Void ) {
+        
+        provider.request(.signup(signupRequest)) { response in
+            switch response {
+            case .success(let response):
+                guard let result = try? JSONDecoder().decode(BaseResponse<Empty>.self, from: response.data) else {
+                    onError()
+                    return
+                }
+                
+                if result.status == StatusCode.OK.rawValue {
+                    
+                    onCompleted()
+                } else {
+                    onError()
+                }
+                
+                
+            case .failure(_):
+                onError()
+                return
+            }
+            
+            
+        }
+        
         
         
     }

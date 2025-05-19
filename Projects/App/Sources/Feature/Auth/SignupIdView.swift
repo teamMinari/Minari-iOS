@@ -41,6 +41,18 @@ struct SignupIdView: View {
             
             AuthBottomButton {
                 
+                if _authVM.signupRequest.id.isEmpty {
+                    _authVM.signupAlertMessage = .id
+                    _authVM.signupAlert = true
+                    return
+                }
+                
+                if _authVM.signupRequest.email.isEmpty {
+                    _authVM.signupAlertMessage = .email
+                    _authVM.signupAlert = true
+                    return
+                }
+                
                 _rootVM.paths.append(CFDAuthViews.signupPw)
             }
         }
@@ -58,6 +70,11 @@ struct SignupIdView: View {
             }
             
         }
+        .alert(isPresented: $_authVM.signupAlert) {
+            Alert(title: Text("알림"), message: Text(_authVM.signupAlertMessage.message),
+                             dismissButton: .default(Text("확인")))
+        }
+       
         
         
         

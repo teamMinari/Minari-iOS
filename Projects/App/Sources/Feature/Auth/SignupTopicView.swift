@@ -3,6 +3,9 @@ import SwiftUI
 struct SignupTopicView: View {
     
     @EnvironmentObject var _rootVM: RootViewModel
+    @EnvironmentObject var _authVM: AuthViewModel
+    
+    @AppStorage("savedTopic") var savedTopic: Data?
     
     var body: some View {
         VStack {
@@ -25,18 +28,25 @@ struct SignupTopicView: View {
                     .frame(maxHeight: 36)
                 
                 
-                LazyVGrid(columns: Array(repeating: .init(), count: 3)) {
-                    ForEach(0..<20) { i in
+                LazyVGrid(columns: Array(repeating: .init(.flexible(maximum: 64)), count: 3)) {
+                    ForEach($_authVM.topics, id: \.self) { $item in
                         HStack(spacing: 0) {
-                            Spacer()
-                            
-                            SelectTopicButton("\(i)", isSelected: .constant(false))
-                            
-                            Spacer()
+                            SelectTopicButton(item.name, isSelected: item.isEnable) {
+                                if !item.isEnable {
+                                    $_authVM.topics.forEach { $item in
+                                        item.isEnable = false
+                                    }
+                                    
+                                    _authVM.savedTopic = .init(topic: item.name, job: _authVM.savedTopic.job)
+                                    
+                                    
+                                    item.isEnable = true
+                                }
+                            }
                         }
                     }
                 }
-                
+                .padding(.trailing, 30)
                 
                 
                 
@@ -49,8 +59,20 @@ struct SignupTopicView: View {
             
             AuthBottomButton {
                 
-                _rootVM.popToRoot()
-                _rootVM.paths.append(CFDAuthViews.signin)
+                if _authVM.savedTopic.topic == nil {
+                    _authVM.signupAlertMessage = .topic
+                    _authVM.signupAlert = true
+                    return
+                }
+                
+                savedTopic = _authVM.savedTopic.encode()!
+                
+                _authVM.signup {
+                    _rootVM.popToRoot()
+                    _rootVM.paths.append(CFDAuthViews.signin)
+                } onError: {
+                    print("signup error")
+                }
                 
             }
         }
@@ -67,6 +89,11 @@ struct SignupTopicView: View {
                 }
             }
         }
+        .alert(isPresented: $_authVM.signupAlert) {
+            Alert(title: Text("알림"), message: Text(_authVM.signupAlertMessage.message),
+                             dismissButton: .default(Text("확인")))
+        }
+        
         
     }
 }

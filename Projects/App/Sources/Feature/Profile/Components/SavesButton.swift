@@ -49,7 +49,7 @@ struct SavesButton: View {
             .overlay {
                 
                 GeometryReader { reader in
-                    CFDAsset.Icon.banner.swiftUIImage
+                    CFDAsset.Icon.bannerFill.swiftUIImage
                         .resizable()
                         .scaledToFit()
                         .frame(width: 50, height: 50)

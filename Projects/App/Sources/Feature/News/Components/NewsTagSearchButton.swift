@@ -4,11 +4,13 @@ struct NewsTagSearchButton: View {
     
     let category: CFDCategory
     
-    @Binding var isEnable: Bool
+    var isEnable: Bool
+    let action: () -> ()
     
-    init(category: CFDCategory, isEnable: Binding<Bool> = .constant(false)) {
+    init(category: CFDCategory, isEnable: Bool, action: @escaping () -> ()) {
         self.category = category
-        self._isEnable = isEnable
+        self.isEnable = isEnable
+        self.action = action
     }
     
     var body: some View {
@@ -33,6 +35,9 @@ struct NewsTagSearchButton: View {
             Text(category.name)
                 .font(.pretendard(size: 14))
                 .foregroundStyle(CFDAsset.Gray.g700.swiftUIColor)
+        }
+        .onTapGesture {
+            action()
         }
     }
 }

@@ -1,25 +1,30 @@
 import SwiftUI
+import Kingfisher
 
 struct TodayNewsCard: View {
+    
+    let item: NewsResponse
+    
     var body: some View {
         VStack(spacing: 0) {
-            AsyncImage(url: URL(string: "https://www.techsmith.com/blog/wp-content/uploads/2023/08/What-are-High-Resolution-Images.png")) { result in
-                result.image?
-                    .resizable()
-            }
-            .frame(height: 140)
-            .frame(maxWidth: .infinity)
-            .background(Color.white)
-            .clipShape(.rect(topLeadingRadius: 16, topTrailingRadius: 16))
+            KFImage(URL(string: item.thumbnail ?? ""))
+                .placeholder {
+                    CFDAsset.Gray.g100.swiftUIColor
+                }
+                .resizable()
+                .frame(height: 140)
+                .frame(maxWidth: .infinity)
+                .background(Color.white)
+                .clipShape(.rect(topLeadingRadius: 16, topTrailingRadius: 16))
             
             
             VStack(alignment: .leading, spacing: 12) {
-                Text("코스닥 새내기株 대진첨단소재 85% 강세…장중 '따블'[핫종목]")
+                Text(item.title)
                     .font(.pretendard(size: 14, weight: .semibold))
                     .lineLimit(2)
                     .foregroundStyle(CFDAsset.Gray.g800.swiftUIColor)
                 
-                Text("뉴스원")
+                Text(item.company ?? "출처 없음")
                     .font(.pretendard(size: 12))
                     .foregroundStyle(CFDAsset.Gray.g600.swiftUIColor)
             }
@@ -30,6 +35,12 @@ struct TodayNewsCard: View {
             .background(Color.white.clipShape(.rect(bottomLeadingRadius: 16, bottomTrailingRadius: 16)))
             
             
+        }
+        .onTapGesture {
+            if let url = item.url {
+                NavigationManager.instance.present(next: SafariViewer(url: url))
+            }
+    
         }
         
         

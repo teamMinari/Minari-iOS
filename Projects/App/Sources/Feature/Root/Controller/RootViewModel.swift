@@ -10,6 +10,7 @@ class RootViewModel: ObservableObject {
     
     @Published var isDebug: Bool = true
     
+    
     var isSigned: Bool {
         return KeyChain.read() != nil
     }

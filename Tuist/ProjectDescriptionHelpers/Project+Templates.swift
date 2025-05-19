@@ -19,7 +19,8 @@ public extension Project {
             configurations: [
                 .debug(name: .debug),
                 .release(name: .release)
-            ], defaultSettings: .recommended)
+            ]
+        )
 
         let appTarget = Target(
             name: name,
@@ -34,8 +35,12 @@ public extension Project {
             additionalFiles: additionalFiles
         )
 
-        let schemes: [Scheme] = [.makeScheme(target: .debug, name: name)]
-
+        let schemes: [Scheme] = [
+            .makeScheme(target: .debug, name: name, targets: ["CFD"]),
+            .makeScheme(target: .release, name: "\(name)-Release", targets: ["CFD"])
+        ]
+        
+        
         let targets: [Target] = [appTarget]
 
         return Project(
@@ -50,13 +55,11 @@ public extension Project {
 }
 
 extension Scheme {
-    static func makeScheme(target: ConfigurationName, name: String) -> Scheme {
+    static func makeScheme(target: ConfigurationName, name: String, targets: [TargetReference] = []) -> Scheme {
         return Scheme(
             name: name,
-            shared: true,
-            buildAction: .buildAction(targets: ["\(name)"]),
+            buildAction: .buildAction(targets: targets),
             runAction: .runAction(configuration: target),
-    
             archiveAction: .archiveAction(configuration: target),
             profileAction: .profileAction(configuration: target),
             analyzeAction: .analyzeAction(configuration: target)

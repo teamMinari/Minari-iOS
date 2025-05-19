@@ -5,6 +5,9 @@ struct ProfileView: View {
     @EnvironmentObject var _rootVM: RootViewModel
     @EnvironmentObject var _profileVM: ProfileViewModel
     
+    @AppStorage("savedTopic") var savedTopic: Data?
+    
+    
     var body: some View {
         ZStack {
             ScrollView {
@@ -23,7 +26,7 @@ struct ProfileView: View {
                             .overlay {
                                 Circle()
                                     .trim(from: 0.2, to: 0.8)
-                                    .trim(from: 0, to: 0.7)
+                                    .trim(from: 0, to: _profileVM.nextLevelProgress())
                                     .stroke(Color(hex: 0x28A745), style: .init(lineWidth: 5))
                                     .rotationEffect(.degrees(90))
                             }
@@ -39,13 +42,17 @@ struct ProfileView: View {
                                                     .scaledToFit()
                                                     .frame(width: 85, height: 85)
                                                 
-                                                Text("슬기로운 포도알")
-                                                    .font(.pretendard(size: 16, weight: .semibold))
+                                                if let response = _profileVM.response,
+                                                   let title = response.title {
+                                                    Text(title)
+                                                        .font(.pretendard(size: 16, weight: .semibold))
+                                                }
                                             }
                                             
                                             .position(x: reader.frame(in: .local).width / 2, y: (reader.frame(in: .local).height / 2) - 44)
                                         }
                                     }
+                                    
                             }
                         
                         VStack {
@@ -62,10 +69,10 @@ struct ProfileView: View {
                                         .foregroundStyle(CFDAsset.Gray.g900.swiftUIColor)
                                     
                                     HStack {
-                                        Text("2,584 P")
+                                        Text("\(_profileVM.response?.point ?? 0) P")
                                             .font(.pretendard(size: 32, weight: .bold))
                                             .foregroundStyle(CFDAsset.Gray.g900.swiftUIColor)
-                                        
+                                            .skeleton(_profileVM.response == nil, shape: Rectangle())
                                         
                                         Spacer()
                                         
@@ -84,7 +91,8 @@ struct ProfileView: View {
                                     .fill(Color(hex: 0xECEFFB))
                                     .frame(height: 1)
                                 
-                                ProfileTitleCard()
+                                ProfileTitleCard(item: _profileVM.response)
+                                    .skeleton(_profileVM.response == nil, shape: RoundedRectangle(cornerRadius: 16))
                                 
                                 VStack(alignment: .leading, spacing: 8) {
                                     Text("저장 목록")
@@ -99,21 +107,37 @@ struct ProfileView: View {
                                     Text("내 관심사")
                                         .font(.pretendard(size: 16, weight: .semibold))
                                     
+                                    
                                     HStack {
-                                        Text("10대/선신")
-                                            .font(.pretendard(size: 16, weight: .semibold))
-                                            .foregroundStyle(Color(hex: 0x6A6A6A))
+                                        
+                                        if let savedTopic = savedTopic,
+                                           let decodedTopic = SavedTopic.decode(savedTopic),
+                                           let topic = decodedTopic.topic,
+                                           let job = decodedTopic.job {
+                                            Text("\(topic)/\(job)")
+                                                .font(.pretendard(size: 16, weight: .semibold))
+                                                .foregroundStyle(Color(hex: 0x6A6A6A))
+                                        } else {
+                                            Text("관심사를 설정해야 합니다")
+                                                .font(.pretendard(size: 16, weight: .semibold))
+
+                                        }
                                         
                                         Spacer()
                                         
                                         Button {
-                                            
+                                            _rootVM.paths.append(CFDViews.profileTopic)
                                         } label: {
                                             Text("변경하러가기>")
                                                 .font(.pretendard(size: 14))
                                                 .foregroundStyle(CFDAsset.Primary.p300.swiftUIColor)
                                         }
                                     }
+                                    .onTapGesture {
+                                        if SavedTopic.decode(savedTopic ?? Data()) != nil {
+                                            _rootVM.paths.append(CFDViews.profileTopic)
+                                        }
+                                    }                                    
                                 }
                                 
                                 Spacer()
@@ -128,6 +152,20 @@ struct ProfileView: View {
                                     .strokeBorder(Color(hex: 0xECEFFB))
                                     .background(RoundedRectangle(cornerRadius: 16).fill(Color.white))
                             )
+                            .overlay {
+                                if let response = _profileVM.response {
+                                    GeometryReader { reader in
+                                        Text("\(response.level)Lv")
+                                            .font(.pretendard(size: 10, weight: .semibold))
+                                            .foregroundStyle(Color.white)
+                                            .padding(.vertical, 6)
+                                            .padding(.horizontal, 2)
+                                            .background(Circle().fill(Color(hex: 0x28A745)).shadow(color: Color.black.opacity(0.15), radius: 3, x: 2, y: 2))
+                                            .position(x: reader.frame(in: .local).width / 2)
+                                            .offset(x: 100)
+                                    }
+                                }
+                            }
                         }
                         
                     }
@@ -183,6 +221,7 @@ struct ProfileView: View {
             if _profileVM.response == nil {
                 _profileVM.getProfile()
             }
+            
         }
         
         

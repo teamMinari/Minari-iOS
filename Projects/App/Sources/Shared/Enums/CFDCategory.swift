@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum CFDCategory {
+enum CFDCategory: String {
     case finance, securities, economy, industrialBusiness, realEstate, hotnews
     
     var name: String {

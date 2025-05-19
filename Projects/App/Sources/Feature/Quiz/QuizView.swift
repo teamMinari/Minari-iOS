@@ -2,7 +2,9 @@ import SwiftUI
 
 struct QuizView: View {
     
+    @EnvironmentObject var _rootVM: RootViewModel
     @EnvironmentObject var _profileVM: ProfileViewModel
+    @EnvironmentObject var _quizVM: QuizViewModel
     
     var body: some View {
         ScrollView {
@@ -17,9 +19,17 @@ struct QuizView: View {
                             .foregroundStyle(CFDAsset.Gray.g900.swiftUIColor)
                         
                         VStack {
-                            QuizButton(.economy)
+                            QuizButton(.economy) {
+                                _quizVM.getQuiz()
+                                _quizVM.lastPoint = _profileVM.response?.point ?? 0
+                                _rootVM.paths.append(CFDViews.inQuiz)
+                            }
                             
-                            QuizButton(.review)
+                            QuizButton(.review) {
+                                _quizVM.getQuiz()
+                                _quizVM.lastPoint = _profileVM.response?.point ?? 0
+                                _rootVM.paths.append(CFDViews.inQuiz)
+                            }
                         }
                         
                         HStack {
@@ -65,7 +75,7 @@ struct QuizView: View {
                                         .background {
                                             ZStack {
                                                 Circle()
-                                                    .trim(from: 0, to: 0.7)
+                                                    .trim(from: 0, to: _profileVM.nextLevelProgress())
                                                     .stroke(Color(hex: 0x28A745), style: .init(lineWidth: 5))
                                                     .frame(width: 110, height: 110)
                                                 
@@ -85,7 +95,7 @@ struct QuizView: View {
                                             +
                                             Text("을 얻기까지\n")
                                             +
-                                            Text("100exp")
+                                            Text("\(_profileVM.getExpNextLevel(level: _profileVM.response?.level ?? 0))exp")
                                                 .fontWeight(.semibold)
                                             +
                                             Text("가 남았습니다!")
@@ -118,8 +128,9 @@ struct QuizView: View {
                                             HStack {
                                                 VStack(alignment: .leading, spacing: 10) {
                                                     
-                                                    Text("2,584 P")
+                                                    Text("\(_profileVM.response?.point ?? 0) P")
                                                         .font(.pretendard(size: 32, weight: .bold))
+                                                        .skeleton(_profileVM.response == nil, shape: Rectangle())
                                                     
                                                     Button {
                                                         

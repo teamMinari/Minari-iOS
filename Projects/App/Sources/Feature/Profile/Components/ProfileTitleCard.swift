@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct ProfileTitleCard: View {
+    let item: ProfileResponse?
+    
     var body: some View {
         RoundedRectangle(cornerRadius: 16)
             .stroke(CFDAsset.Gray.g300.swiftUIColor)
@@ -24,7 +26,7 @@ struct ProfileTitleCard: View {
                         }
                         .foregroundStyle(CFDAsset.Primary.p300.swiftUIColor)
                         
-                        Text("헤실거리는 포도송이")
+                        Text(item?.title ?? "칭호가 없습니다")
                             .font(.pretendard(size: 20, weight: .bold))
                             .foregroundStyle(CFDAsset.Gray.g900.swiftUIColor)
                         
@@ -33,8 +35,11 @@ struct ProfileTitleCard: View {
                         
                         InfoBubble(text: "\"히힛\"")
                     }
+                    
+                    Spacer(minLength: 0)
                 }
                 .padding(.horizontal, 25)
             }
+        
     }
 }

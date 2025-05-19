@@ -12,7 +12,10 @@ let dependencies = Dependencies(
             requirement: .upToNextMinor(from: "5.0.0")),
         .remote(
             url: "https://github.com/onevcat/Kingfisher",
-            requirement: .upToNextMajor(from: "8.3.0"))
+            requirement: .upToNextMajor(from: "8.3.0")),
+        .remote(
+            url: "https://github.com/kaishin/Gifu.git",
+            requirement: .exact("3.2.2"))
     ],
     platforms: [.iOS]
 )

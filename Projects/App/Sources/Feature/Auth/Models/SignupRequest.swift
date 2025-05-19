@@ -5,7 +5,7 @@ struct SignupRequest: BaseRequest {
     var email: String = ""
     
     var params: [String: Any] {
-        self.makeParams(excluding: ["confirmPassword"])
+        self.makeParams()
     }
     
     var isPasswordValid: Bool {

@@ -5,6 +5,10 @@ struct RootView: View {
     @EnvironmentObject var _rootVM: RootViewModel
     
     @StateObject var _profileVM = ProfileViewModel()
+    @StateObject var _homeVM = HomeViewModel()
+    @StateObject var _newsVM = NewsViewModel()
+    
+    @StateObject var _quizVM = QuizViewModel()
     
     var body: some View {
         GeometryReader { reader in
@@ -18,8 +22,10 @@ struct RootView: View {
                             NewsView()
                         case .home:
                             HomeView()
+                                .environmentObject(_homeVM)
                         case .quiz:
                             QuizView()
+                                .environmentObject(_quizVM)
                         case .profile:
                             ProfileView()
                         }
@@ -27,13 +33,14 @@ struct RootView: View {
                     .scrollIndicators(.hidden)
                     .environmentObject(_rootVM)
                     .environmentObject(_profileVM)
+                    .environmentObject(_newsVM)
                     
                 }
                 .hideBar(_rootVM.isTabBarHidden)
                 
-                if(_rootVM.tabSelection == .home) {
+                if(_rootVM.tabSelection == .home && !_rootVM.isTabBarHidden && !_homeVM.isSearched) {
                     Button {
-                        
+                        _rootVM.paths.append(CFDViews.aichat)
                     } label: {
                         VStack {
                             CFDAsset.Icon.chat.swiftUIImage
@@ -63,10 +70,12 @@ struct RootView: View {
                 Group {
                     switch view {
                     case .aichat: AIChatView()
+                    case .profileTopic: ProfileTopicView()
+                    case .inQuiz: QuizIngameView().environmentObject(_quizVM)
                     }
                 }
-                
                 .environmentObject(_rootVM)
+                .environmentObject(_profileVM)
                 
             }
         }

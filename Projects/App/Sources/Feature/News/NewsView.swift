@@ -3,24 +3,28 @@ import SwiftUI
 struct NewsView: View {
     
     let tagCategories: [CFDCategory] = [.finance, .securities, .industrialBusiness, .realEstate, .economy]
-
+    
+    @EnvironmentObject var _newsVM: NewsViewModel
     
     var body: some View {
         ScrollView {
             VStack(spacing: 12) {
                 Spacer(minLength: 32)
-
-                NewsCell()
+                
+                NewsCell(items: _newsVM.hotNewsList, selectedIndex: $_newsVM.selectedIndex)
                     .padding(.horizontal, 25)
                 
+                
                 HStack(spacing: 4) {
-                    ForEach(0..<3) { _ in
+                    
+                    ForEach(0..<_newsVM.hotNewsList.count, id: \.self) { i in
                         CFDAsset.Icon.circle.swiftUIImage
                             .resizable()
                             .scaledToFit()
                             .frame(width: 6, height: 6)
-                            .foregroundStyle(CFDAsset.Primary.p500.swiftUIColor)
+                            .foregroundStyle(i == _newsVM.selectedIndex ? CFDAsset.Primary.p500.swiftUIColor : CFDAsset.Gray.g200.swiftUIColor)
                     }
+                    
                 }
                 
                 VStack(alignment: .leading, spacing: 8) {
@@ -31,29 +35,32 @@ struct NewsView: View {
                         .font(.pretendard(size: 16, weight: .semibold))
                         .foregroundStyle(CFDAsset.Gray.g800.swiftUIColor)
                     
-                    HStack(spacing: 0) {
+                    HStack(alignment: .top, spacing: 0) {
                         
-                        ForEach(tagCategories.dropLast(), id: \.hashValue) { item in
-                            
-                            NewsTagSearchButton(category: item)
+                        Spacer()
+                        
+                        ForEach(tagCategories, id: \.self) { item in
+                            NewsTagSearchButton(category: item, isEnable: (item == _newsVM.currentCategory)) {
+                                _newsVM.currentCategory = item
+                            }
                             
                             Spacer()
                             
                         }
                         
-                        NewsTagSearchButton(category: tagCategories.last!, isEnable: .constant(true))
-
                     }
                     
                     
                     Spacer()
                         .frame(height: 24)
                     
-                    NewsMiniCell()
+                    ForEach(_newsVM.newsList, id: \.self) { item in
+                        NewsMiniCell(item: item)
+                    }
                     
                     Spacer()
                         .frame(height: 60)
-
+                    
                 }
                 .padding(.horizontal, 22)
                 .frame(maxWidth: .infinity)
@@ -63,6 +70,18 @@ struct NewsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(CFDAsset.Gray.g50.swiftUIColor)
+        .onAppear {
+            if _newsVM.hotNewsList.isEmpty {
+                _newsVM.fetchHotnews()
+            }
+            
+            if _newsVM.newsList.isEmpty {
+                _newsVM.fetchNews()
+            }
+        }
+        .onChange(of: _newsVM.currentCategory) { value in
+            _newsVM.fetchNews()
+        }
     }
 }
 

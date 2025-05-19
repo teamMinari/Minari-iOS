@@ -2,10 +2,16 @@ import SwiftUI
 
 struct TagSearchButton: View {
     let category: CFDCategory
+    let action: () -> ()
+    
+    init(category: CFDCategory, action: @escaping () -> Void) {
+        self.category = category
+        self.action = action
+    }
     
     var body: some View {
         Button {
-            
+            action()
         } label: {
             VStack(spacing: 5) {
                 RoundedRectangle(cornerRadius: 10)

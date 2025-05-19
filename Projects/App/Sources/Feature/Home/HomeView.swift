@@ -2,120 +2,144 @@ import SwiftUI
 
 struct HomeView: View {
     
-    let tagCategories: [CFDCategory] = [.finance, .securities, .industrialBusiness, .realEstate, .economy]
-
+    let recommendedText: [String] = ["추가경정예산", "인플레이션", "가상통화", "선불카드"]
+    
+    @EnvironmentObject var _rootVM: RootViewModel
+    
+    @EnvironmentObject var _homeVM: HomeViewModel
+    @EnvironmentObject var _newsVM: NewsViewModel
+    
+    @FocusState var isFocused: Bool
     
     var body: some View {
         VStack(spacing: 0) {
-            Rectangle()
-                .fill(Color.white)
+            Color.white
                 .frame(height: 40)
             
-            
-            Rectangle()
-                .fill(Color.white)
-                .frame(height: 125)
-                .overlay {
-                    HStack(spacing: 12) {
-                        CFDAsset.Icon.logo.swiftUIImage
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 36, height: 36)
-                            .foregroundStyle(CFDAsset.Primary.p500.swiftUIColor)
-                        
-                        CFDSearchBar()
-                    }
-                    .padding(.horizontal, 24)
+            HStack(spacing: 12) {
+                if !isFocused {
+                    CFDAsset.Icon.logo.swiftUIImage
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                        .foregroundStyle(CFDAsset.Primary.p500.swiftUIColor)
+                        .onTapGesture {
+                            if (_homeVM.isSearched) {
+                                _homeVM.keywordReset()
+                                _homeVM.isSearched = false
+                            }
+                        }
                 }
+                
+                CFDSearchBar(isFocused: $isFocused, text: $_homeVM.keywordRequest.keyword) {
+                    if !_homeVM.isSearchRemaining {
+                        if !_homeVM.keywordRequest.keyword.isEmpty {
+                            isFocused = true
+                            
+                            _homeVM.searchKeyword {
+                                isFocused = false
+                            }
+                            
+                        } else {
+                            if _homeVM.isSearched {
+                                _homeVM.isSearched = false
+                            }
+                        }
+                    }
+                }
+             
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 20)
+            .frame(maxWidth: .infinity) 
+            .background(Color.white)
             
+           
             
             ScrollView {
-                Spacer()
-                    .frame(height: 20)
                 
-                VStack(spacing: 20) {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("뉴스 태그 검색")
-                            .font(.pretendard(size: 16, weight: .semibold))
-                            .foregroundStyle(CFDAsset.Gray.g800.swiftUIColor)
-                        
-                        HStack(spacing: 0) {
-                            
-                            ForEach(tagCategories.dropLast(), id: \.hashValue) { item in
-                                
-                                TagSearchButton(category: item)
-                                
-                                Spacer()
-                                
-                            }
-                            
-                            TagSearchButton(category: tagCategories.last ?? .economy)
-                            
-                        }
-                    }
+                if isFocused {
                     
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("오늘의 경제 단어")
-                            .font(.pretendard(size: 16, weight: .semibold))
-                        
-                        TodayTermsCard()
-                    }
-                    
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("지금 뜨는 뉴스")
-                            .font(.pretendard(size: 16, weight: .semibold))
-                        
-                        VStack(spacing: 20) {
-                            TodayNewsCard()
-                            
-                            TodayNewsCard()
-                            
-                            TodayNewsCard()
-                        }
-
-                        
-                    }
-                    
-                    Button {
-                        
-                    } label: {
-                        RoundedRectangle(cornerRadius: 12)
-                            .strokeBorder(CFDAsset.Gray.g200.swiftUIColor)
-                            .background(RoundedRectangle(cornerRadius: 12).fill(Color.white))
-                            .frame(height: 44)
-                            .overlay {
-                                HStack {
-                                    Spacer()
-                                    
-                                    CFDAsset.Icon.starFill.swiftUIImage
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 24, height: 24)
-                                    
-                                    
-                                    Text("많이 본 뉴스 더보기")
-                                        .font(.pretendard(size: 16, weight: .semibold))
-                                    
-                                    Spacer()
-
+                    VStack(spacing: 20) {
+                        if let items = _homeVM.keywordResponses {
+                            ForEach(items, id: \.self) { item in
+                                HomeSearchButton(item.termNm) {
+                                    _homeVM.getTermsById(id: item.termId) {
+                                        isFocused = false
+                                    }
                                 }
-                                .foregroundStyle(CFDAsset.Gray.g500.swiftUIColor)
-
                             }
+                        } else {
+                            ForEach(recommendedText, id: \.self) { text in
+                                HomeSearchButton(text) {
+                                    _homeVM.keywordRequest.keyword = text
+                                }
+                            }
+                        }
                     }
-                }
-                .padding(.horizontal, 20)
-                
-                Spacer(minLength: 120)
+                    .padding(20)
+                    .background(Color.white)
+                    .overlay {
+                        GeometryReader { reader in
+                            Rectangle()
+                                .fill(CFDAsset.Gray.g200.swiftUIColor)
+                                .frame(height: 1)
+                                .position(x: reader.frame(in: .local).width / 2, y: reader.frame(in: .local).height)
+                        }
+                    }
+                    
+                    
+                } else {
+                    VStack {
+                        Group {
+                            if !_homeVM.isSearched {
+                                HomeMainView()
+                            } else {
+                                HomeSearchView()
+                            }
+                            
+                        }
+                        .environmentObject(_rootVM)
+                        
+                        Spacer(minLength: 120)
 
+                    }
+                    .environmentObject(_homeVM)
+
+                }
+                
             }
         }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(CFDAsset.Gray.g50.swiftUIColor)
-       
-        
+        .onChange(of: isFocused) { value in
+            _rootVM.isTabBarHidden = isFocused
+            
+            
+            if _homeVM.isSearchRemaining {
+                DispatchQueue.main.async {
+                    isFocused = true
+                }
+            }
+        }
+        .onDisappear {
+            _homeVM.keywordReset()
+            _homeVM.isSearched = false
+            _homeVM.keywordRequest.keyword = ""
+        }
+        .onAppear {
+            _homeVM.keywordReset()
+            _homeVM.isSearched = false
+            
+            if(_homeVM.todayTermResponses == nil) {
+                _homeVM.getTodayTerm()
+            }
+            
+            if(_newsVM.hotNewsList.isEmpty) {
+                _newsVM.fetchHotnews()
+            }
+        }
         
     }
 }

@@ -21,7 +21,7 @@ struct SigninView: View {
             Spacer()
                 .frame(maxHeight: 12)
             
-            CFDTextField(prompt: "비밀번호 입력", text: $_authVM.signinRequest.password)
+            CFDTextField(prompt: "비밀번호 입력", text: $_authVM.signinRequest.password, isSecure: true)
                 
             
             Spacer()
@@ -135,7 +135,7 @@ struct SigninView: View {
             Alert(title: Text("알림"), message: Text("개발 중인 기능입니다."),
                              dismissButton: .default(Text("확인")))
         }
-        .onAppear {
+        .onDisappear {
             _authVM.signinRequest = .init(id: "", password: "")
         }
         
